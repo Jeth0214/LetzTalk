@@ -1,0 +1,23 @@
+<header class="header">
+
+    <mat-toolbar color="primary">
+        <div class="toolbar__name">
+            <h1>LetzTalk</h1>
+        </div>
+        <span class="example-spacer"></span>
+        <div class="toolbar__menus">
+            <mat-icon matBadge="15" matBadgeColor="warn"> notification_important</mat-icon>
+
+            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="profile menu button">
+                <img src="https://robohash.org/hicveldicta.png?size=30x30" alt="Terry Medhurst">
+
+            </button>
+            <mat-menu #menu="matMenu">
+                <button mat-menu-item>
+                    <mat-icon>edit</mat-icon>
+                    <span>Edit Profile</span>
+                </button>
+            </mat-menu>
+        </div>
+    </mat-toolbar>
+</header>
