@@ -1,0 +1,59 @@
+<div class="login">
+    <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="card" style="width: 30rem;">
+            <div class="card-header bg-primary text-white">
+                <h1 class="fw-bold text-center mb-0">
+                    <ng-container *ngIf="isRegistered; else test">
+                        Registration
+                    </ng-container>
+                    <ng-template #test>
+                        Login
+                    </ng-template>
+                </h1>
+            </div>
+            <div class="card-body">
+                <form [formGroup]="registrationLoginForm" (ngSubmit)="onSubmit()">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email address</label>
+                        <input type="email" formControlName="email" class="form-control border " id="email"
+                            [class.border-danger]="registrationLoginForm.get('email')?.invalid &&  registrationLoginForm.get('email')?.touched"
+                            placeholder="name@example.com">
+                        <div class="invalid-feedback"
+                            [class.d-block]="registrationLoginForm.get('email')?.invalid && registrationLoginForm.get('email')?.touched ">
+                            <p *ngIf="registrationLoginForm.get('email')?.errors?.['required']">Email is required</p>
+                            <p *ngIf="registrationLoginForm.get('email')?.errors?.['email']">Invalid email format</p>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" formControlName="password" class="form-control border" id="password"
+                            placeholder="min of 6 characters"
+                            [class.border-danger]="registrationLoginForm.get('password')?.invalid && registrationLoginForm.get('password')?.touched">
+                        <div class=" invalid-feedback"
+                            [class.d-block]="registrationLoginForm.get('password')?.invalid &&  registrationLoginForm.get('password')?.touched">
+                            <p *ngIf="registrationLoginForm.get('password')?.errors?.['required']">
+                                Password is required
+                            </p>
+                            <p *ngIf="registrationLoginForm.get('password')?.hasError('minlength')">
+                                Password must at least 6 characters
+                            </p>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mb-3" [disabled]="registrationLoginForm.invalid">
+                        Submit </button>
+                    <div class="d-grid justify-content-center">
+                        <button type="button" class="btn btn-link text-decoration-none" (click)="registerOrLogin()">
+                            <ng-container *ngIf="isRegistered; else registered">
+                                Already have account? Login here.
+                            </ng-container>
+                            <ng-template #registered>
+                                Don't have account? Register here.
+                            </ng-template>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
