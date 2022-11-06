@@ -15,5 +15,11 @@ export class LoginService {
     const headers = new HttpHeaders();
     const options = { headers: headers, withCredintials: false };
     return this.http.post<Login>(`${environment.apiBaseUrl}/login`, data, options)
+  };
+
+  register(data: Login): Observable<any> {
+    const headers = new HttpHeaders();
+    const options = { headers: headers, withCredintials: false };
+    return this.http.post<Login>(`${environment.apiBaseUrl}/register`, data, options)
   }
 }
