@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { LoginService } from 'src/app/services/login.service';
 
 @Component({
   selector: 'app-login',
@@ -10,13 +11,15 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit {
 
   isRegistered: boolean = false;
-
   registrationLoginForm!: FormGroup;
+  alertData: any = {};
+  showAlert: boolean = false;
 
 
   constructor(
     private formBuilder: FormBuilder,
-    private router: Router
+    private router: Router,
+    private loginService: LoginService,
   ) { }
 
   ngOnInit(): void {
@@ -32,7 +35,20 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     let data = this.registrationLoginForm.value;
+    this.registrationLoginForm.reset();
     // add service logic if backend is ready
-    this.router.navigate(['/chats'])
+    if (!this.isRegistered) {
+      this.loginService.login(data).subscribe(response => {
+        console.log(response)
+      }, error => {
+        this.showAlert = true;
+        this.alertData = { ...error.error }
+      })
+    }
+    // this.router.navigate(['/chats'])
+  };
+
+  closeAlert() {
+    this.showAlert = false;
   }
 }

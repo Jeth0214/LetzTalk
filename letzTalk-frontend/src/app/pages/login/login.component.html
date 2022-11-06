@@ -12,6 +12,11 @@
                 </h1>
             </div>
             <div class="card-body">
+                <div *ngIf="!showAlert">
+
+                    <ngb-alert [type]="alertData.status" (close)="closeAlert()">{{alertData.message}}
+                    </ngb-alert>
+                </div>
                 <form [formGroup]="registrationLoginForm" (ngSubmit)="onSubmit()">
                     <div class="mb-3">
                         <label for="email" class="form-label">Email address</label>

@@ -4,6 +4,7 @@ import { LoginComponent } from './login/login.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ChatsComponent } from './chats/chats.component';
 import { LayoutModule } from '../layout/layout.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 
@@ -15,7 +16,8 @@ import { LayoutModule } from '../layout/layout.module';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    LayoutModule
+    LayoutModule,
+    NgbModule
   ],
   exports: [
     LoginComponent,
