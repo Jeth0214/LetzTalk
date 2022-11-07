@@ -74,13 +74,12 @@ export class LoginComponent implements OnInit {
         this.alertData.status = error.error.status;
         this.alertData.message = error.error.message[getFormControlError[0]][0];
         this.showAlert = true;
-        console.log(this.alertData)
       })
     };
 
     setTimeout(() => {
       this.closeAlert();
-    }, 1000);
+    }, 5000);
   };
 
   closeAlert() {
