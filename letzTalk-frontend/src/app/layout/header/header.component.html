@@ -27,15 +27,74 @@
 </header>
 
 <ng-template #content let-offcanvas>
-    <div class="offcanvas-header">
-        <h4 class="offcanvas-title" id="user-profile">Profile update</h4>
-        <button type="button" class="btn-close" aria-label="Close" (click)="offcanvas.dismiss('Cross click')"></button>
+    <div class="offcanvas-header justify-content-center bg-primary">
+        <h2 class="offcanvas-title fw-bold mb-0 text-white" id="user-profile">Profile</h2>
     </div>
     <div class="offcanvas-body">
-        <form>
+        <div class="d-flex justify-content-center text-center">
+            <div>
+                <img src="https://randomuser.me/api/portraits/thumb/men/75.jpg" class="rounded-circle">
+                <h3>
+                    <span *ngIf="!isEditing">{{ user.name }}</span>
+                    <span *ngIf="isEditing">
+                        <i class="fa-sharp fa-solid fa-user-pen" (click)="updateProfilePic()"></i>
+                    </span>
+                </h3>
+            </div>
+        </div>
+        <form [formGroup]="updateProfileForm" (ngSubmit)="updateProfile()">
+            <div class="mb-3" *ngIf="isEditing">
+                <label for="name" class="form-label">Full Name</label>
+                <input type="text" formControlName="name" class="form-control border " id="name"
+                    [class.border-danger]="updateProfileForm.get('name')?.invalid &&  updateProfileForm.get('name')?.touched"
+                    placeholder="John Doe">
+                <div class="invalid-feedback"
+                    [class.d-block]="updateProfileForm.get('name')?.invalid && updateProfileForm.get('name')?.touched ">
+                    <p>Fullname is required</p>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email address</label>
+                <input type="email" formControlName="email" class="form-control border " id="email"
+                    [class.border-danger]="updateProfileForm.get('email')?.invalid &&  updateProfileForm.get('email')?.touched"
+                    placeholder="name@example.com">
+                <div class="invalid-feedback"
+                    [class.d-block]="updateProfileForm.get('email')?.invalid && updateProfileForm.get('email')?.touched ">
+                    <p *ngIf="updateProfileForm.get('email')?.errors?.['required']">Email is required</p>
+                    <p *ngIf="updateProfileForm.get('email')?.errors?.['email']">Invalid email format</p>
+                </div>
+            </div>
+            <div class="mb-3" *ngIf="isEditing">
+                <label for="password" class="form-label">Change Password?</label>
+                <input type="password" formControlName="password" class="form-control border" id="password"
+                    placeholder="min of 6 characters"
+                    [class.border-danger]="updateProfileForm.get('password')?.invalid && updateProfileForm.get('password')?.touched">
+                <div class=" invalid-feedback"
+                    [class.d-block]="updateProfileForm.get('password')?.invalid &&  updateProfileForm.get('password')?.touched">
+                    <p *ngIf="updateProfileForm.get('password')?.hasError('minlength')">
+                        Password must at least 6 characters
+                    </p>
+                </div>
+            </div>
+
+            <input *ngIf="isEditing" type="file" #filePicker (change)="selectedPic($event)">
+
+            <button *ngIf="isEditing" type="submit" class="btn btn-primary w-100 mb-3"> Submit
+            </button>
         </form>
-        <div class="text-end">
-            <button type="button" class="btn btn-outline-dark" (click)="offcanvas.close('Save click')">Save</button>
+        <div class="d-flex justify-content-between">
+            <div class="">
+                <button type="button" class="btn btn-outline-dark"
+                    (click)="offcanvas.close('Save click')">Logout</button>
+            </div>
+            <div>
+                <button *ngIf="!isEditing" type="button" class="btn btn-outline-dark me-2"
+                    (click)="onEdit()">Edit</button>
+                <button *ngIf="isEditing" type="button" class="btn btn-outline-danger me-2"
+                    (click)="resetEditing()">Cancel
+                    Edit</button>
+                <button type="button" class="btn btn-outline-primary" (click)="offcanvas.close()">Close</button>
+            </div>
         </div>
     </div>
 </ng-template>

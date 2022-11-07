@@ -53,7 +53,8 @@ export class LoginComponent implements OnInit {
     if (!this.isRegistered) {
       this.loginService.login(data).subscribe(response => {
         this.registrationLoginForm.reset();
-        console.log(response)
+        console.log(response);
+        localStorage.setItem('userData', JSON.stringify(response));
         this.router.navigate(['/chats'])
       }, (error) => {
         this.alertData = { ...error.error }
