@@ -15,7 +15,7 @@ class UserController extends Controller
         if(!$user || !Hash::check($request->password, $user->password)) {
             return response([
                 'status' => 'danger',
-                'message' => ['These credentials do not match our records.']
+                'message' => 'These credentials do not match our records.'
             ], 404);
         }
 

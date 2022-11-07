@@ -3,16 +3,32 @@
         <div class="card" style="width: 30rem;">
             <div class="card-header bg-primary text-white">
                 <h1 class="fw-bold text-center mb-0">
-                    <ng-container *ngIf="isRegistered; else test">
+                    <ng-container *ngIf="isRegistered; else login">
                         Registration
                     </ng-container>
-                    <ng-template #test>
+                    <ng-template #login>
                         Login
                     </ng-template>
                 </h1>
             </div>
             <div class="card-body">
+                <div *ngIf="showAlert" [ngClass]=" alertData.status === 'success' ? 'alert-success': 'alert-danger'"
+                    class="alert alert-dismissible fade show" role="alert">
+                    <strong>{{ alertData.message}}</strong>
+                    <button type="button" (click)="closeAlert()" class="btn-close" data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+                </div>
                 <form [formGroup]="registrationLoginForm" (ngSubmit)="onSubmit()">
+                    <div class="mb-3" *ngIf="isRegistered">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" formControlName="name" class="form-control border " id="name"
+                            [class.border-danger]="registrationLoginForm.get('name')?.invalid &&  registrationLoginForm.get('name')?.touched"
+                            placeholder="John Doe">
+                        <div class="invalid-feedback"
+                            [class.d-block]="registrationLoginForm.get('name')?.invalid && registrationLoginForm.get('name')?.touched ">
+                            <p>Fullname is required</p>
+                        </div>
+                    </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email address</label>
                         <input type="email" formControlName="email" class="form-control border " id="email"
