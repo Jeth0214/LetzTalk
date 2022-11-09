@@ -14,3 +14,19 @@ body {
 
 /* Importing Bootstrap SCSS file. */
 @import '~bootstrap/scss/bootstrap';
+
+//modified off canvas position
+.offcanvas.offcanvas-end {
+    top: 80px !important;
+    border-left: none;
+}
+
+;
+
+.profile-image {
+    max-width: 200px;
+
+    img {
+        height: 200px;
+    }
+}

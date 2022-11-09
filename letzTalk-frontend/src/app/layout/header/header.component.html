@@ -1,23 +1,107 @@
 <header class="header">
-
-    <mat-toolbar color="primary">
-        <div class="toolbar__name">
-            <h1>LetzTalk</h1>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand text-primary" href="#"><i class="fa fa-comments me-1"
+                    aria-hidden="true"></i>LetzTalk</a>
+            <div class="">
+                <ul class="navbar-nav">
+                    <li class="nav-item me-4 position-relative">
+                        <a class="nav-link" aria-current="page" href="#"><i class="fa fa-bell fa-2x"
+                                aria-hidden="true"></i>
+                            <span
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                99+
+                                <span class="visually-hidden">unread messages</span>
+                            </span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a (click)="showUserProfile(content)" class="nav-link">
+                            <img src="https://randomuser.me/api/portraits/thumb/men/75.jpg" class="rounded-circle">
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <span class="example-spacer"></span>
-        <div class="toolbar__menus">
-            <mat-icon matBadge="15" matBadgeColor="warn"> notification_important</mat-icon>
-
-            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="profile menu button">
-                <img src="https://robohash.org/hicveldicta.png?size=30x30" alt="Terry Medhurst">
-
-            </button>
-            <mat-menu #menu="matMenu">
-                <button mat-menu-item>
-                    <mat-icon>edit</mat-icon>
-                    <span>Edit Profile</span>
-                </button>
-            </mat-menu>
-        </div>
-    </mat-toolbar>
+    </nav>
 </header>
+
+<ng-template #content let-offcanvas>
+    <div class="offcanvas-header justify-content-center bg-primary">
+        <h2 class="offcanvas-title fw-bold mb-0 text-white" id="user-profile">Profile</h2>
+    </div>
+    <div class="offcanvas-body">
+        <div class="d-flex justify-content-center text-center">
+            <div>
+                <div class="profile-image">
+                    <ng-container *ngIf="profilePic;  else noProfilePic">
+                        <img [src]="profilePic" class="img-fluid img-thumbnail">
+                    </ng-container>
+                    <ng-template #noProfilePic>
+                        <img src="assets/images/no-image.png" class="img-fluid img-thumbnail">
+                    </ng-template>
+                </div>
+                <h3>
+                    <span *ngIf="!isEditing">{{ user.name }}</span>
+                    <span *ngIf="isEditing">
+                        <i class="fa-sharp fa-solid fa-user-pen" (click)="filePicker.click()"></i>
+                    </span>
+                </h3>
+            </div>
+        </div>
+        <form [formGroup]="updateProfileForm" (ngSubmit)="updateProfile()">
+            <div class="mb-3" *ngIf="isEditing">
+                <label for="name" class="form-label">Full Name</label>
+                <input type="text" formControlName="name" class="form-control border " id="name"
+                    [class.border-danger]="updateProfileForm.get('name')?.invalid &&  updateProfileForm.get('name')?.touched"
+                    placeholder="John Doe">
+                <div class="invalid-feedback"
+                    [class.d-block]="updateProfileForm.get('name')?.invalid && updateProfileForm.get('name')?.touched ">
+                    <p>Fullname is required</p>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email address</label>
+                <input type="email" formControlName="email" class="form-control border " id="email"
+                    [class.border-danger]="updateProfileForm.get('email')?.invalid &&  updateProfileForm.get('email')?.touched"
+                    placeholder="name@example.com">
+                <div class="invalid-feedback"
+                    [class.d-block]="updateProfileForm.get('email')?.invalid && updateProfileForm.get('email')?.touched ">
+                    <p *ngIf="updateProfileForm.get('email')?.errors?.['required']">Email is required</p>
+                    <p *ngIf="updateProfileForm.get('email')?.errors?.['email']">Invalid email format</p>
+                </div>
+            </div>
+            <div class="mb-3" *ngIf="isEditing">
+                <label for="password" class="form-label">Change Password?</label>
+                <input type="password" formControlName="password" class="form-control border" id="password"
+                    placeholder="min of 6 characters"
+                    [class.border-danger]="updateProfileForm.get('password')?.invalid && updateProfileForm.get('password')?.touched">
+                <div class=" invalid-feedback"
+                    [class.d-block]="updateProfileForm.get('password')?.invalid &&  updateProfileForm.get('password')?.touched">
+                    <p *ngIf="updateProfileForm.get('password')?.hasError('minlength')">
+                        Password must at least 6 characters
+                    </p>
+                </div>
+            </div>
+
+            <input class="d-none" type="file" #filePicker (change)="onSelectPic($event)">
+
+            <button *ngIf="isEditing" type="submit" class="btn btn-primary w-100 mb-3"> Submit
+            </button>
+        </form>
+        <div class="d-flex justify-content-between">
+            <div class="">
+                <button type="button" class="btn btn-outline-dark"
+                    (click)="offcanvas.close('Save click')">Logout</button>
+            </div>
+            <div>
+                <button *ngIf="!isEditing" type="button" class="btn btn-outline-dark me-2"
+                    (click)="onEdit()">Edit</button>
+                <button *ngIf="isEditing" type="button" class="btn btn-outline-danger me-2"
+                    (click)="resetEditing()">Cancel
+                    Edit</button>
+                <button type="button" class="btn btn-outline-primary" (click)="offcanvas.close()">Close</button>
+            </div>
+        </div>
+    </div>
+</ng-template>
