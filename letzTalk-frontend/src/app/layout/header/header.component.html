@@ -17,7 +17,10 @@
                     </li>
                     <li class="nav-item">
                         <a (click)="showUserProfile(content)" class="nav-link">
-                            <img src="https://randomuser.me/api/portraits/thumb/men/75.jpg" class="rounded-circle">
+                            <!-- <img src="https://randomuser.me/api/portraits/thumb/men/75.jpg" class="rounded-circle"> -->
+                            <img [src]="profilePic ? 'https://randomuser.me/api/portraits/thumb/men/75.jpg' : 'assets/images/no-image.png' "
+                                class="rounded-circle" style="width: 50px; height: 50px">
+
                         </a>
                     </li>
                 </ul>
@@ -49,7 +52,7 @@
                 </h3>
             </div>
         </div>
-        <form [formGroup]="updateProfileForm" (ngSubmit)="updateProfile()">
+        <form [formGroup]="updateProfileForm" (ngSubmit)="updateProfile()" enctype="multipart/form-data">
             <div class="mb-3" *ngIf="isEditing">
                 <label for="name" class="form-label">Full Name</label>
                 <input type="text" formControlName="name" class="form-control border " id="name"
@@ -84,14 +87,14 @@
                 </div>
             </div>
 
-            <input class="d-none" type="file" #filePicker (change)="onSelectPic($event)">
+            <input class="d-none" type="file" accept=".png, .jpg, .jpeg" #filePicker (change)="onSelectPic($event)">
 
             <button *ngIf="isEditing" type="submit" class="btn btn-primary w-100 mb-3"> Submit
             </button>
         </form>
         <div class="d-flex justify-content-between">
             <div class="">
-                <button type="button" class="btn btn-outline-dark"
+                <button type="button" class="btn btn-outline-danger"
                     (click)="offcanvas.close('Save click')">Logout</button>
             </div>
             <div>

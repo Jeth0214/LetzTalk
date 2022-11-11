@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { LoginService } from 'src/app/services/login.service';
+import { UserService } from 'src/app/services/user.service';
 
 interface Alert {
   status: string,
@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private router: Router,
-    private loginService: LoginService,
+    private userService: UserService,
   ) { }
 
   ngOnInit(): void {
@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     let data = this.registrationLoginForm.value;
     if (!this.isRegistered) {
-      this.loginService.login(data).subscribe(response => {
+      this.userService.login(data).subscribe(response => {
         this.registrationLoginForm.reset();
         console.log(response);
         localStorage.setItem('userData', JSON.stringify(response));
@@ -62,7 +62,7 @@ export class LoginComponent implements OnInit {
       });
     }
     else {
-      this.loginService.register(data).subscribe(response => {
+      this.userService.register(data).subscribe(response => {
         console.log(response);
         this.showAlert = true;
         this.registrationLoginForm.reset();
