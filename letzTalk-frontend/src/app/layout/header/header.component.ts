@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-header',
@@ -10,6 +11,7 @@ import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 export class HeaderComponent implements OnInit {
   @Input() user: any;
   profilePic: string = '';
+  profilePicFile: any;
 
   // @ViewChild('filePicker')
   // filePickerRef: ElementRef<HTMLInputElement>; // eslint-disable-next-line no-console
@@ -20,7 +22,8 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private offCanvasService: NgbOffcanvas,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
@@ -31,7 +34,8 @@ export class HeaderComponent implements OnInit {
     this.updateProfileForm = this.formBuilder.group({
       'name': [this.user.name, Validators.required],
       'email': [this.user.email, [Validators.required, Validators.email]],
-      'password': ['', Validators.minLength(6)]
+      'password': ['', Validators.minLength(6)],
+      'user_image': ['']
     });
     if (this.user.user_image != '') {
       this.profilePic = this.user.user_image;
@@ -61,12 +65,21 @@ export class HeaderComponent implements OnInit {
   }
 
   updateProfile() {
+    //this.updateProfileForm.patchValue({ 'user_image': this.profilePic });
+    console.log(this.updateProfileForm.value)
     const updatedProfileData: FormData = new FormData();
-    updatedProfileData.append('name', this.updateProfileForm.get('name')?.value);
-    updatedProfileData.append('email', this.updateProfileForm.get('email')?.value);
-    updatedProfileData.append('password', this.updateProfileForm.get('password')?.value);
-    updatedProfileData.append('user_image', this.profilePic);
-
+    // @ts-ignore
+    updatedProfileData.append('name', this.updateProfileForm.get('name').value);
+    // @ts-ignore
+    updatedProfileData.append('email', this.updateProfileForm.get('email').value);
+    // @ts-ignore
+    updatedProfileData.append('password', this.updateProfileForm.get('password').value);
+    if (this.profilePicFile) {
+      updatedProfileData.append('user_image', this.profilePicFile);
+    }
+    this.userService.updateUser(this.user.id, updatedProfileData).subscribe(response => {
+      console.log(response)
+    })
   };
 
   onEdit() {
@@ -77,7 +90,8 @@ export class HeaderComponent implements OnInit {
   onSelectPic(event: Event) {
     // @ts-ignore
     const selectedPic = (event.target as HTMLInputElement).files[0];
-    // console.log(selectedPic)
+    this.profilePicFile = selectedPic;
+    //console.log(selectedPic)
     //if (!selectedPic) return;
     if (typeof (FileReader) != undefined) {
       let reader = new FileReader();

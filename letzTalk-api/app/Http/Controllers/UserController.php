@@ -67,6 +67,7 @@ class UserController extends Controller
         if(Auth::id() != $user->id) {
             return response('Unathorized', 401);
         };
+        
        // Validate request data
         $validateRequest = Validator::make($request->all(), 
         [
@@ -88,23 +89,32 @@ class UserController extends Controller
 
         // check image request,  store it in storage and get storage path as url
         $profilePic = $request->user_image;
-        if($request->hasFile('user_image')) {
+        if($request->user_image != '') {
             $extension = $profilePic->extension();
             $profilePicName = $request->email . '-' . time() . '.' .$extension;
             $profilePic->storeAs('images', time(). "." . $profilePicName);
             $profilePic->move(public_path('images'), $profilePicName);
+            // update new profile image
+            $user->user_image = $profilePicName;
         };
 
         //update user data
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->user_image = $profilePicName;
+       
+
         if($request->password != "" ) {
             $user->password = Hash::make($request->password);
         }
 
         $user->save();
 
-        return response($user, 201);
+        $data = [
+            'status' => 'success',
+            'message' => 'You had successfully updated your profile',
+            'user' => $user
+        ];
+
+        return response($data, 201);
     }
 }

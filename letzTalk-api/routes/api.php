@@ -20,9 +20,9 @@ use App\Http\Controllers\UserController;
 // });
 
 Route::group(['middleware' => 'auth:sanctum'], function(){
-    Route::put('/users/{user}', [UserController::class, 'updateProfile']);
+    Route::post('/users/{user}', [UserController::class, 'updateProfile']);
 });
 
 
-Route::post('login', [UserController::class, 'login']);
-Route::post('register', [UserController::class, 'register']);
+Route::post('users/login', [UserController::class, 'login']);
+Route::post('users/register', [UserController::class, 'register']);
