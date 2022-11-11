@@ -87,21 +87,18 @@ class UserController extends Controller
         };
 
         // check image request,  store it in storage and get storage path as url
-        $profilePicUrl = "";
-        $base_images_url = "/public/profile/images";
+        $profilePic = $request->user_image;
         if($request->hasFile('user_image')) {
-            $extension = $request->user_image->extension();
-            $request->user_image->storeAs($base_images_url, $user->name. "-" . time(). "." . $extension);
-           $imageUrl = Storage::url($base_images_url, $user->name. "-" . time(). "." . $extension);
-
-           $profilePicUrl = $imageUrl;
+            $extension = $profilePic->extension();
+            $profilePicName = $request->email . '-' . time() . '.' .$extension;
+            $profilePic->storeAs('images', time(). "." . $profilePicName);
+            $profilePic->move(public_path('images'), $profilePicName);
         };
 
         //update user data
-
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->user_image = $profilePicUrl;
+        $user->user_image = $profilePicName;
         if($request->password != "" ) {
             $user->password = Hash::make($request->password);
         }
