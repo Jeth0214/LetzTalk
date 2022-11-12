@@ -13,9 +13,6 @@ export class HeaderComponent implements OnInit {
   profilePic: string = '';
   profilePicFile: any;
 
-  // @ViewChild('filePicker')
-  // filePickerRef: ElementRef<HTMLInputElement>; // eslint-disable-next-line no-console
-
   closeResult = '';
   updateProfileForm!: FormGroup;
   isEditing: boolean = false;
@@ -38,7 +35,7 @@ export class HeaderComponent implements OnInit {
       'user_image': ['']
     });
     if (this.user.user_image != '') {
-      this.profilePic = this.user.user_image;
+      this.profilePic = `http://127.0.0.1:8000/images/${this.user.user_image}`;
     } else {
       this.profilePic = '';
     }
@@ -65,20 +62,25 @@ export class HeaderComponent implements OnInit {
   }
 
   updateProfile() {
-    //this.updateProfileForm.patchValue({ 'user_image': this.profilePic });
-    console.log(this.updateProfileForm.value)
     const updatedProfileData: FormData = new FormData();
-    // @ts-ignore
-    updatedProfileData.append('name', this.updateProfileForm.get('name').value);
-    // @ts-ignore
-    updatedProfileData.append('email', this.updateProfileForm.get('email').value);
-    // @ts-ignore
-    updatedProfileData.append('password', this.updateProfileForm.get('password').value);
+    updatedProfileData.append('name', this.updateProfileForm.get('name')?.value);
+    updatedProfileData.append('email', this.updateProfileForm.get('email')?.value);
+    updatedProfileData.append('password', this.updateProfileForm.get('password')?.value);
     if (this.profilePicFile) {
       updatedProfileData.append('user_image', this.profilePicFile);
     }
     this.userService.updateUser(this.user.id, updatedProfileData).subscribe(response => {
-      console.log(response)
+      if (response.status === 'success') {
+        console.log(response);
+        this.user = response.user;
+        let userDataFromStorage = JSON.parse(localStorage.getItem('userData') as string);
+        userDataFromStorage.token = userDataFromStorage.token;
+        userDataFromStorage.user = { ...response.user };
+        console.log(userDataFromStorage);
+        localStorage.removeItem('userData');
+        localStorage.setItem('userData', JSON.stringify(userDataFromStorage));
+        this.profilePic = `http://127.0.0.1:8000/images/${response.user.user_image}`;
+      }
     })
   };
 
@@ -91,8 +93,6 @@ export class HeaderComponent implements OnInit {
     // @ts-ignore
     const selectedPic = (event.target as HTMLInputElement).files[0];
     this.profilePicFile = selectedPic;
-    //console.log(selectedPic)
-    //if (!selectedPic) return;
     if (typeof (FileReader) != undefined) {
       let reader = new FileReader();
       reader.onload = (event: any) => {
