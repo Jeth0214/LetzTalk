@@ -17,8 +17,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('token')->default('');
+            $table->integer('connection_id')->default(0);
+            $table->enum('user_status', ['Offline', 'Online']);
+            $table->string('user_image')->default('');
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
