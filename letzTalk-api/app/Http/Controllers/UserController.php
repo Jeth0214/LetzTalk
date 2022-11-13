@@ -117,4 +117,9 @@ class UserController extends Controller
 
         return response($data, 201);
     }
+
+    public function logout() {
+        Auth::logout();
+        return response(['status' => 'Success'], 200);
+    }
 }
