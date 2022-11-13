@@ -33,6 +33,7 @@
         <h2 class="offcanvas-title fw-bold mb-0 text-white" id="user-profile">Profile</h2>
     </div>
     <div class="offcanvas-body">
+
         <div class="d-flex justify-content-center text-center">
             <div>
                 <div class="profile-image">
@@ -88,21 +89,29 @@
 
             <input class="d-none" type="file" accept=".png, .jpg, .jpeg" #filePicker (change)="onSelectPic($event)">
 
-            <button *ngIf="isEditing" type="submit" class="btn btn-primary w-100 mb-3"> Submit
+            <button [disabled]="isUpdating" *ngIf="isEditing" type="submit" class="btn btn-primary w-100 mb-3"> Submit
             </button>
         </form>
+
+        <div *ngIf="showAlert" [ngClass]=" alertData.status === 'success' ? 'alert-success': 'alert-danger'"
+            class="alert alert-dismissible fade show" role="alert">
+            <strong>{{ alertData.message}}</strong>
+            <button type="button" (click)="closeAlert()" class="btn-close" data-bs-dismiss="alert"
+                aria-label="Close"></button>
+        </div>
         <div class="d-flex justify-content-between">
             <div class="">
-                <button type="button" class="btn btn-outline-danger"
-                    (click)="offcanvas.close('Save click')">Logout</button>
+                <button type="button" class="btn btn-outline-danger" (click)="offcanvas.close('Save click')"
+                    [disabled]="isUpdating">Logout</button>
             </div>
             <div>
                 <button *ngIf="!isEditing" type="button" class="btn btn-outline-dark me-2"
                     (click)="onEdit()">Edit</button>
-                <button *ngIf="isEditing" type="button" class="btn btn-outline-danger me-2"
-                    (click)="resetEditing()">Cancel
+                <button *ngIf="isEditing" type="button" class="btn btn-outline-danger me-2" (click)="resetEditing()"
+                    [disabled]="isUpdating">Cancel
                     Edit</button>
-                <button type="button" class="btn btn-outline-primary" (click)="offcanvas.close()">Close</button>
+                <button type="button" class="btn btn-outline-primary" (click)="offcanvas.close()"
+                    [disabled]="isUpdating">Close</button>
             </div>
         </div>
     </div>
