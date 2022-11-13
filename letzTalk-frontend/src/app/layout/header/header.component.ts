@@ -3,6 +3,11 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { UserService } from 'src/app/services/user.service';
 
+interface Alert {
+  status: string,
+  message: string
+}
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
@@ -16,6 +21,13 @@ export class HeaderComponent implements OnInit {
   closeResult = '';
   updateProfileForm!: FormGroup;
   isEditing: boolean = false;
+  isUpdating: boolean = false;
+
+  alertData: Alert = {
+    status: '',
+    message: ''
+  };
+  showAlert: boolean = false;
 
   constructor(
     private offCanvasService: NgbOffcanvas,
@@ -41,6 +53,7 @@ export class HeaderComponent implements OnInit {
     }
     this.updateProfileForm.disable();
     this.isEditing = false;
+    this.isUpdating = false;
   }
 
   showUserProfile(content: any) {
@@ -62,6 +75,7 @@ export class HeaderComponent implements OnInit {
   }
 
   updateProfile() {
+    this.isUpdating = true;
     const updatedProfileData: FormData = new FormData();
     updatedProfileData.append('name', this.updateProfileForm.get('name')?.value);
     updatedProfileData.append('email', this.updateProfileForm.get('email')?.value);
@@ -70,18 +84,32 @@ export class HeaderComponent implements OnInit {
       updatedProfileData.append('user_image', this.profilePicFile);
     }
     this.userService.updateUser(this.user.id, updatedProfileData).subscribe(response => {
+      this.showAlert = true;
       if (response.status === 'success') {
-        console.log(response);
+        console.log('API Response', response);
         this.user = response.user;
         let userDataFromStorage = JSON.parse(localStorage.getItem('userData') as string);
         userDataFromStorage.token = userDataFromStorage.token;
         userDataFromStorage.user = { ...response.user };
-        console.log(userDataFromStorage);
+        console.log('Local Storage Data', userDataFromStorage);
         localStorage.removeItem('userData');
         localStorage.setItem('userData', JSON.stringify(userDataFromStorage));
-        this.profilePic = `http://127.0.0.1:8000/images/${response.user.user_image}`;
+        if (response.user.user_image) {
+          this.profilePic = `http://127.0.0.1:8000/images/${response.user.user_image}`;
+        };
+        this.alertData = { ...response };
+        this.resetEditing();
       }
-    })
+    }, (error) => {
+      console.log(error.error.status)
+      const getFormControlError = Object.keys(error.error.message);
+      this.alertData.status = error.error.status;
+      this.alertData.message = error.error.message[getFormControlError[0]][0];
+      this.showAlert = true;
+    });
+    setTimeout(() => {
+      this.closeAlert();
+    }, 5000);
   };
 
   onEdit() {
@@ -101,6 +129,10 @@ export class HeaderComponent implements OnInit {
       };
       reader.readAsDataURL(selectedPic);
     }
+  };
+
+  closeAlert() {
+    this.showAlert = false;
   }
 
 }
