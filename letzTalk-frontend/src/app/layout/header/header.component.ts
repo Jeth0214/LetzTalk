@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { UserService } from 'src/app/services/user.service';
 
@@ -32,7 +33,8 @@ export class HeaderComponent implements OnInit {
   constructor(
     private offCanvasService: NgbOffcanvas,
     private formBuilder: FormBuilder,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -67,6 +69,15 @@ export class HeaderComponent implements OnInit {
       panelClass: 'bg-light'
     }).result.then(
       (result) => {
+        console.log('Off Canvas Result: ', result)
+        if (result == 'logout') {
+          this.userService.logout().subscribe(response => {
+            if (response.status === 'Success') {
+              localStorage.removeItem('userData');
+              this.router.navigate(['/']);
+            }
+          });
+        }
         setTimeout(() => {
           this.resetEditing();
         }, 1000)

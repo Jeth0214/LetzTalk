@@ -32,5 +32,9 @@ export class UserService {
     options.append('Accept', 'application/json');
     //options.append('Authorization', `Bearer ${userData.token}`);
     return this.http.post(`${environment.apiBaseUrl}/users/${id}`, data, { headers: options });
-  }
+  };
+
+  logout(): Observable<any> {
+    return this.http.get(`${environment.apiBaseUrl}/logout`);
+  };
 }
