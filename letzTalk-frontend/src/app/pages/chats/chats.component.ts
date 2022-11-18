@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { WebsocketService } from 'src/app/services/websocket.service';
 
 @Component({
   selector: 'app-chats',
@@ -8,12 +9,13 @@ import { Component, OnInit } from '@angular/core';
 export class ChatsComponent implements OnInit {
   userData: any;
 
-  constructor() { }
+  constructor(private webSocketService: WebsocketService) { }
 
   ngOnInit(): void {
     const data = JSON.parse(localStorage.getItem('userData') as string);
     this.userData = data.user;
     console.log(this.userData);
+    this.webSocketService.openWebSocket()
   }
 
 }
