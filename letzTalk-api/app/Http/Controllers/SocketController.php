@@ -39,6 +39,6 @@ class SocketController extends Controller implements MessageComponentInterface
 
     public function onError(ConnectionInterface $conn, \Exception $e) {
         $conn->close();
-        return response(`An Error Occured: ${ $e->getMessage()}`);
+        return response('An Error Occured: ' . $e->getMessage() );
     }
 }
