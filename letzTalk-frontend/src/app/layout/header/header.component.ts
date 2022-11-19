@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgbOffcanvas } from '@ng-bootstrap/ng-bootstrap';
 import { UserService } from 'src/app/services/user.service';
+import { WebsocketService } from 'src/app/services/websocket.service';
 
 interface Alert {
   status: string,
@@ -34,7 +35,8 @@ export class HeaderComponent implements OnInit {
     private offCanvasService: NgbOffcanvas,
     private formBuilder: FormBuilder,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    private webSocketService: WebsocketService
   ) { }
 
   ngOnInit(): void {
@@ -74,6 +76,7 @@ export class HeaderComponent implements OnInit {
           this.userService.logout().subscribe(response => {
             if (response.status === 'Success') {
               localStorage.removeItem('userData');
+              this.webSocketService.closeWebSocket();
               this.router.navigate(['/']);
             }
           });
@@ -100,7 +103,6 @@ export class HeaderComponent implements OnInit {
         console.log('API Response', response);
         this.user = response.user;
         let userDataFromStorage = JSON.parse(localStorage.getItem('userData') as string);
-        userDataFromStorage.token = userDataFromStorage.token;
         userDataFromStorage.user = { ...response.user };
         console.log('Local Storage Data', userDataFromStorage);
         localStorage.removeItem('userData');

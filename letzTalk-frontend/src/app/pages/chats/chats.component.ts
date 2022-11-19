@@ -12,8 +12,8 @@ export class ChatsComponent implements OnInit {
   constructor(private webSocketService: WebsocketService) { }
 
   ngOnInit(): void {
-    const data = JSON.parse(localStorage.getItem('userData') as string);
-    this.userData = data.user;
+    const user = JSON.parse(localStorage.getItem('userData') as string);
+    this.userData = user;
     console.log(this.userData);
     this.webSocketService.openWebSocket()
   }
