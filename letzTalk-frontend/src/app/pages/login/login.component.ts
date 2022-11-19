@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
       this.userService.login(data).subscribe(response => {
         this.registrationLoginForm.reset();
         console.log(response);
-        localStorage.setItem('userData', JSON.stringify(response));
+        localStorage.setItem('userData', JSON.stringify(response.user));
         this.router.navigate(['/chats'])
       }, (error) => {
         this.alertData = { ...error.error }

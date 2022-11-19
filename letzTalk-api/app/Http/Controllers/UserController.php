@@ -19,14 +19,14 @@ class UserController extends Controller
                 'status' => 'danger',
                 'message' => 'These credentials do not match our records.'
             ], 404);
-        }
-
+        };
         $token = $user->createToken('letstalk-token')->plainTextToken;
+        $user->token = $token;
+        $user->save();
 
         $response = [
             'status' => 'success',
             'user' => $user,
-            'token' => $token
         ];
 
         return response($response, 201);

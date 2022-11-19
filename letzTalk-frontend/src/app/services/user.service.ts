@@ -26,7 +26,7 @@ export class UserService {
   updateUser(id: number, data: any): Observable<any> {
     const userData = JSON.parse(localStorage.getItem('userData') as string);
     const options = new HttpHeaders({
-      'Authorization': `Bearer ${userData.token}`
+      'Authorization': `Bearer ${userData.user.token}`
     });
     options.append('Content-Type', 'multipart/form-data');
     options.append('Accept', 'application/json');
